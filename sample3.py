@@ -40,7 +40,7 @@ model = bundle.get_model()
 
 SAVE_DIR = "./audio"
 os.makedirs(SAVE_DIR, exist_ok=True)
-
+from collections import Counter
 import wave
 
 import os
@@ -52,6 +52,7 @@ import torch.nn.functional as F
 import subprocess
 from fastapi import UploadFile, File
 from fastapi.responses import JSONResponse
+from checking import UnifiedDeepfakeDetector
 
 SAVE_DIR = './audio' 
 def reencode_audio(input_path, output_path):
@@ -109,6 +110,7 @@ async def upload_file(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, buffer)
 
     reencode_audio(wav_filename, reencoded_filename)
+    
     os.remove(wav_filename)
     print(f"File successfully re-encoded as: {reencoded_filename}")
 
@@ -118,9 +120,22 @@ async def upload_file(file: UploadFile = File(...)):
     except Exception as e:
         print(f"Error loading re-encoded file: {e}")
     new_features = extract_features(reencoded_filename)
+    detector = UnifiedDeepfakeDetector()
+    print(reencoded_filename)
+    result = detector.analyze_audio_rf(reencoded_filename, model_choice="all")
     prediction, entropy = classify_audio(new_features)
     with open(reencoded_filename, "rb") as audio_file:
         audio_data = audio_file.read()
+    result.append("FAKE" if float(entropy) < 150 else "REAL")
+    print(result)
+    r_normalized = [x.upper() for x in result]
+    counter = Counter(r_normalized)
+
+    # Find the most common element
+    most_common_element, _ = counter.most_common(1)[0]
+
+    print(f"The most frequent element is: {most_common_element}") 
+    
 
     audio_base64 = base64.b64encode(audio_data).decode('utf-8')
     print(f"Audio Data Length: {len(audio_data)}")
@@ -128,53 +143,53 @@ async def upload_file(file: UploadFile = File(...)):
     os.remove(reencoded_filename)
     return JSONResponse(content={
         "filename": file.filename,
-        "prediction": bool(prediction),
+        "prediction": most_common_element.upper(),
         "entropy": float(entropy),
         "audio": audio_base64,
         "content_type": "audio/wav"
     })
 
-@app.post("/upload_deepfake")
-async def upload_file(file: UploadFile = File(...), text: str = Form(...)):
-    print(f"Received file: {file.filename}")
+# @app.post("/upload_deepfake")
+# async def upload_file(file: UploadFile = File(...), text: str = Form(...)):
+#     print(f"Received file: {file.filename}")
 
-    original_filename = file.filename.rsplit('.', 1)[0]
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    wav_filename = os.path.join(SAVE_DIR, f"{timestamp}.wav")
-    reencoded_filename = os.path.join(SAVE_DIR, f"{timestamp}_reencoded.wav")
+#     original_filename = file.filename.rsplit('.', 1)[0]
+#     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+#     wav_filename = os.path.join(SAVE_DIR, f"{timestamp}.wav")
+#     reencoded_filename = os.path.join(SAVE_DIR, f"{timestamp}_reencoded.wav")
 
-    os.makedirs(SAVE_DIR, exist_ok=True)
-    with open(wav_filename, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+#     os.makedirs(SAVE_DIR, exist_ok=True)
+#     with open(wav_filename, "wb") as buffer:
+#         shutil.copyfileobj(file.file, buffer)
 
-    reencode_audio(wav_filename, reencoded_filename)
-    os.remove(wav_filename)
-    print(f"File successfully re-encoded as: {reencoded_filename}")
-    try:
-        audio, sr = librosa.load(reencoded_filename, sr=None)  
-        print("Loaded successfully with librosa")
-    except Exception as e:
-        print(f"Error loading re-encoded file: {e}")
-    # tortoise(reencoded_filename, text)
+#     reencode_audio(wav_filename, reencoded_filename)
+#     os.remove(wav_filename)
+#     print(f"File successfully re-encoded as: {reencoded_filename}")
+#     try:
+#         audio, sr = librosa.load(reencoded_filename, sr=None)  
+#         print("Loaded successfully with librosa")
+#     except Exception as e:
+#         print(f"Error loading re-encoded file: {e}")
+#     # tortoise(reencoded_filename, text)
     
-    # with open("/audio/sample.wav", "rb") as audio_file:
-    #     audio_data = audio_file.read()
-    with open(reencoded_filename, "rb") as audio_file:
-        audio_data = audio_file.read()
+#     # with open("/audio/sample.wav", "rb") as audio_file:
+#     #     audio_data = audio_file.read()
+#     with open(reencoded_filename, "rb") as audio_file:
+#         audio_data = audio_file.read()
     
 
-    audio_base64 = base64.b64encode(audio_data).decode('utf-8')
-    print(f"Audio Data Length: {len(audio_data)}")
-    print(text)
+#     audio_base64 = base64.b64encode(audio_data).decode('utf-8')
+#     print(f"Audio Data Length: {len(audio_data)}")
+#     print(text)
 
-    os.remove(reencoded_filename)
-    # os.remove("/audio/sample.wav")
+#     os.remove(reencoded_filename)
+#     # os.remove("/audio/sample.wav")
     
-    return JSONResponse(content={
-        "filename": file.filename,
-        "audio": audio_base64,
-        "content_type": "audio/wav"
-    })
+#     return JSONResponse(content={
+#         "filename": file.filename,
+#         "audio": audio_base64,
+#         "content_type": "audio/wav"
+#     })
 
 
 
