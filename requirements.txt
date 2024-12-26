@@ -5,7 +5,6 @@ fastapi
 scipy
 websockets 
 wsproto
-"uvicorn[standard]"
 soundfile
 SpeechRecognition 
 pydub

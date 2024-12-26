@@ -34,9 +34,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-bundle = torchaudio.pipelines.WAV2VEC2_ASR_BASE_960H
+from torchaudio.pipelines import WAV2VEC2_BASE
+bundle = WAV2VEC2_BASE
 model = bundle.get_model()
+print("Model downloaded successfully!")
+
 
 SAVE_DIR = "./audio"
 os.makedirs(SAVE_DIR, exist_ok=True)
@@ -126,6 +128,7 @@ async def upload_file(file: UploadFile = File(...)):
     prediction, entropy = classify_audio(new_features)
     with open(reencoded_filename, "rb") as audio_file:
         audio_data = audio_file.read()
+    result = list(result)
     result.append("FAKE" if float(entropy) < 150 else "REAL")
     print(result)
     r_normalized = [x.upper() for x in result]
