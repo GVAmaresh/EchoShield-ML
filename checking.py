@@ -1,10 +1,18 @@
 import os
 import numpy as np
 import tensorflow as tf
+import tensorflow
 import librosa
 import matplotlib.pyplot as plt
 # import gradio as gr
-import datetime
+
+import os
+os.environ["TORCH_HOME"] = "/tmp/torch_cache"
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+os.environ["MPLCONFIGDIR"] = "/tmp/matplotlib_config"
+os.environ["FONTCONFIG_PATH"] = "/tmp/fontconfig"
+os.environ["HF_HOME"] = "/tmp/huggingface_cache"
+
 from tensorflow.keras.applications.vgg16 import VGG16, preprocess_input
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout

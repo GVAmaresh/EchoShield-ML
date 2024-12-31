@@ -20,6 +20,14 @@ origins = [
 "*"
 ]
 
+import os
+os.environ["TORCH_HOME"] = "/tmp/torch_cache"
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+os.environ["MPLCONFIGDIR"] = "/tmp/matplotlib_config"
+os.environ["FONTCONFIG_PATH"] = "/tmp/fontconfig"
+os.environ["HF_HOME"] = "/tmp/huggingface_cache"
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -34,7 +42,7 @@ print("Model downloaded successfully!")
 
 
 SAVE_DIR = "./audio"
-os.makedirs(SAVE_DIR, exist_ok=True)
+# os.makedirs(SAVE_DIR, exist_ok=True)
 from collections import Counter
 import wave
 
@@ -65,7 +73,7 @@ async def upload_file(file: UploadFile = File(...)):
     wav_filename = os.path.join(SAVE_DIR, f"{timestamp}.wav")
     reencoded_filename = os.path.join(SAVE_DIR, f"{timestamp}_reencoded.wav")
 
-    os.makedirs(SAVE_DIR, exist_ok=True)
+    # os.makedirs(SAVE_DIR, exist_ok=True)
     with open(wav_filename, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
@@ -91,6 +99,12 @@ async def upload_file(file: UploadFile = File(...)):
     })
     
     
+@app.get("/")
+def get_it():
+    return JSONResponse(content={
+        "data":"Working Successfully"
+    })
+
 @app.post("/upload_audio")
 async def upload_file(file: UploadFile = File(...)):
     print(f"Received file: {file.filename}")
@@ -100,7 +114,7 @@ async def upload_file(file: UploadFile = File(...)):
     wav_filename = os.path.join(SAVE_DIR, f"{timestamp}.wav")
     reencoded_filename = os.path.join(SAVE_DIR, f"{timestamp}_reencoded.wav")
 
-    os.makedirs(SAVE_DIR, exist_ok=True)
+    # os.makedirs(SAVE_DIR, exist_ok=True)
     with open(wav_filename, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
