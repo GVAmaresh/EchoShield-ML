@@ -1,14 +1,23 @@
-import torch
 import torchaudio
-import os
-import torch.nn.functional as F
+import torch
 import numpy as np
 from scipy.stats import skew, kurtosis, median_abs_deviation
+import os
+import torch.nn.functional as F
 
-bundle = torchaudio.pipelines.WAV2VEC2_ASR_BASE_960H
+
+from torchaudio.pipelines import WAV2VEC2_BASE
+bundle = WAV2VEC2_BASE
+
 model = bundle.get_model()
+print("Model downloaded successfully!")
+
 
 def extract_features(file_path):
+    if os.path.exists(file_path):
+        print(f"File successfully written: {file_path}")
+    else:
+        print("File writing failed.")
     waveform, sample_rate = torchaudio.load(file_path)
     if sample_rate != bundle.sample_rate:
         waveform = torchaudio.transforms.Resample(orig_freq=sample_rate, new_freq=bundle.sample_rate)(waveform)
@@ -35,25 +44,11 @@ def additional_features(features):
     return mad, entropy
 
 def classify_audio(features):
+
     _, entropy = additional_features(features)
+    print(entropy)
 
     if  entropy > 150:
         return True, entropy
     else:
         return False, entropy
-
-# path = "/content/drive/MyDrive/MajorProject/Sample"
-# files = [os.path.join(path, f) for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-
-# file_true = []
-# file_false = []
-
-# for i in files:
-#     new_features = extract_features(i)
-#     prediction, entropy = classify_audio(new_features)
-#     file_name = os.path.basename(i)
-#     if 'real' in file_name:
-#         file_true.append(f"File: {file_name} | Prediction: {'Human' if prediction else 'AI'} | Entropy: {entropy:.4f}")
-#     else:
-#         file_false.append(f"File: {file_name} | Prediction: {'Human' if prediction else 'AI'} | Entropy: {entropy:.4f}")
-
