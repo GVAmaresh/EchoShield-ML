@@ -90,22 +90,16 @@ Before getting started, make sure you have the following installed and set up:
 
 Installing Python and Setting Up PATH on Windows
 
-1. Download Python**
+**1.Python**
 - Visit the [official Python download page](https://www.python.org/downloads/) and download the latest version for Windows.
 
-2. Run the Installer
-- Double-click the installer to start.
-- **Important**: Ensure the **"Add Python to PATH"** option is checked.
-- Click **"Install Now"** to complete the installation.
-
-3. Verify the Installation
-- Open Command Prompt (`Win + R`, type `cmd`).
-- Check Python version:  
-  ```bash
-  python --version
+- **Important**: Ensure the **"Add Python to PATH"** option is checked and click **"Install Now"**
+- Open Command Prompt (`Win + R`, type `cmd`) and check Python version:  
+```bash
+python --version
   ```
 
-**Git**
+**2. Git**
 
 Ensure that **Git** is installed and that you are logged in to GitHub.
 
@@ -117,11 +111,11 @@ git --version
 If Git is not installed, download and install it from the official Git website:
 
 - Download Git: [git-scm](https://git-scm.com/downloads)
-Git Documentation:
+
 - Git Docs: [git-scm.com/doc](https://git-scm.com/doc)
 
 
-**Docker**
+**3. Docker**
 
 Ensure that Docker is installed on your machine if you plan to use Docker for running the project.
 
@@ -132,12 +126,14 @@ docker --version
 
 If Docker is not installed, download and install it from the official Docker website:
 
-- Download Docker: 
-[www.docker.com/docker-desktop](https://www.docker.com/products/docker-desktop)
-Docker Documentation:
+- Download Docker: [docker-desktop](https://www.docker.com/products/docker-desktop)
 - Docker Docs: [docs.docker](https://docs.docker.com/)
 
-**Using CMD (Command Line)**
+---
+
+**Running the Project**
+
+**1. Using CMD (Command Line)**
 
 First, clone the frontend and backend repositories using the following commands:
 
@@ -159,7 +155,7 @@ python main.py
 ```
 Now you should be able to access the frontend on [http://localhost:3000](http://localhost:3000)
 
-**Using Docker**
+**2. Using Docker**
 
 First, clone the frontend and backend repositories using the following commands:
 
