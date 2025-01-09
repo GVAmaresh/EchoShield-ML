@@ -144,7 +144,7 @@ git clone https://github.com/GVAmaresh/EchoShield-ML
 Navigate into the project directory and install the necessary dependencies.
 
 ```bash
-cd EchoShield-Backend
+cd EchoShield-ML
 pip install -r requirements.txt
 
 ```
@@ -166,7 +166,7 @@ git clone https://github.com/GVAmaresh/EchoShield-ML.git
 To build the Docker images, first navigate into the projectand then build the Docker images
 
 ```bash
-cd EchoShield-Backend
+cd EchoShield-ML
 docker build -t echoshield-backend .
 
 ```
