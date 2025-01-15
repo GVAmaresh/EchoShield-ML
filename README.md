@@ -92,9 +92,9 @@ The minted NFT ensures that the audio and its associated data are immutable, ver
 
 Before getting started, make sure you have the following installed and set up:
 
-Installing Python and Setting Up PATH on Windows
 
 **1.Python**
+Installing Python and Setting Up PATH on Windows
 - Visit the [official Python download page](https://www.python.org/downloads/) and download the latest version for Windows.
 
 - **Important**: Ensure the **"Add Python to PATH"** option is checked and click **"Install Now"**
