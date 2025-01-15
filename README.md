@@ -3,6 +3,9 @@
 
 EchoShield is a comprehensive system that detects whether an audio file is human or AI-generated, analyzes its authenticity, and ensures the data's immutability through blockchain integration.
 
+**TechStack** 
+
+[![My Skills](https://skillicons.dev/icons?i=docker,pytorch,py,fastapi,vscode,windows)](https://skillicons.dev)
 
 **This project is divided into two parts:**
 
